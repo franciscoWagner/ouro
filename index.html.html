@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>⚜ Ouro Fino</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#E8C97A;--gold-d:#7A6030;--dark:#0A0A0F;--dark2:#111118;--dark3:#1A1A24;--dark4:#22222F;--dark5:#2C2C3E;--green:#2ECC71;--green-d:#1A4D32;--green-bg:#0D2B1A;--red:#E74C3C;--red-d:#4D1A1A;--red-bg:#2B0D0D;--text:#E8E8F0;--text-d:#888899;--text-f:#444455;--blue:#1A2A4A;--blue-t:#7EB8F7;--r:14px;--rs:8px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+.app-header{background:var(--dark2);border-bottom:1px solid var(--gold-d);padding:14px 18px 10px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.app-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold)}
+.app-title span{color:var(--text-d);font-size:11px;font-family:'DM Sans',sans-serif;display:block;font-weight:300}
+.week-badge{background:var(--dark4);border:1px solid var(--gold-d);border-radius:99px;padding:4px 12px;font-size:11px;color:var(--gold);font-family:'DM Mono',monospace}
+.nav-tabs{display:flex;background:var(--dark2);border-bottom:1px solid var(--dark5);overflow-x:auto;scrollbar-width:none;position:sticky;top:64px;z-index:99}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{flex:1;min-width:68px;padding:10px 6px;text-align:center;font-size:10px;font-weight:500;color:var(--text-d);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-tab .ti{font-size:15px;display:block;margin-bottom:2px}
+.page{display:none;padding:16px 14px 100px}
+.page.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.scard{background:var(--dark3);border:1px solid var(--dark5);border-radius:var(--r);padding:13px;position:relative;overflow:hidden}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.scard.gold::before{background:var(--gold)}.scard.green::before{background:var(--green)}.scard.red::before{background:var(--red)}.scard.blue::before{background:var(--blue-t)}
+.cl{font-size:10px;color:var(--text-d);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.cv{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;line-height:1}
+.cv.gold{color:var(--gold)}.cv.green{color:var(--green)}.cv.red{color:var(--red)}.cv.blue{color:var(--blue-t)}
+.cu{font-size:10px;color:var(--text-d);margin-top:3px}
+.sec{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--dark5)}
+.tbl{background:var(--dark3);border:1px solid var(--dark5);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.thdr{display:grid;background:var(--dark4);padding:9px 12px;border-bottom:1px solid var(--dark5);font-size:10px;color:var(--gold-d);text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+.trow{display:grid;padding:12px 12px;border-bottom:1px solid var(--dark4);font-family:'DM Mono',monospace;font-size:12px;align-items:center;cursor:pointer;transition:background .15s}
+.trow:last-child{border-bottom:none}.trow:active{background:var(--dark4)}
+.dt{font-size:10px;color:var(--text-d);font-family:'DM Sans',sans-serif}
+.vg{color:var(--green)}.vr{color:var(--red)}.vo{color:var(--gold)}.vd{color:var(--text-d)}
+.empty{text-align:center;padding:36px 16px;color:var(--text-f);font-size:13px}
+.empty-i{font-size:32px;margin-bottom:8px;opacity:.4}
+.tc .thdr,.tc .trow{grid-template-columns:1.1fr .9fr 1fr}
+.tf .thdr,.tf .trow{grid-template-columns:1fr 1fr 1fr}
+.te .thdr,.te .trow{grid-template-columns:1fr .9fr .9fr 1fr}
+.bar-wrap{background:var(--dark3);border:1px solid var(--dark5);border-radius:var(--r);padding:14px;margin-bottom:16px}
+.bar-lbl{font-size:10px;color:var(--text-d);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px}
+.bar-track{background:var(--dark5);border-radius:99px;height:8px;overflow:hidden;margin-bottom:8px}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#27ae60);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.bar-nums{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px}
+.lucro-hero{background:linear-gradient(135deg,#0D1F0D,#0A1A0A);border:1px solid #1A4D1A;border-radius:var(--r);padding:22px 18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden}
+.lucro-hero::before{content:'⚜';position:absolute;font-size:110px;opacity:.04;top:-15px;right:-8px}
+.lh-lbl{font-size:11px;color:#4CAF50;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.lh-val{font-family:'Playfair Display',serif;font-size:38px;color:var(--green);line-height:1;margin-bottom:5px}
+.lh-sub{font-size:11px;color:var(--text-d)}
+.lrow{background:var(--dark3);border:1px solid var(--dark5);border-radius:var(--rs);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lrow-lbl{font-size:12px;color:var(--text-d)}
+.lrow-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+.lrow.hi{background:var(--green-bg);border-color:var(--green-d)}
+.filtro-card{background:var(--dark3);border:1px solid var(--gold-d);border-radius:var(--r);padding:14px;margin-bottom:18px}
+.ftitle{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fsel{background:var(--blue);border:1px solid #2A3D5A;border-radius:var(--rs);padding:10px 12px;color:var(--blue-t);font-family:'DM Mono',monospace;font-size:14px;outline:none;width:100%;-webkit-appearance:none}
+.fres{background:var(--green-bg);border:1px solid var(--green-d);border-radius:var(--rs);padding:13px 14px;display:flex;justify-content:space-between;align-items:center}
+.fres-lbl{font-size:11px;color:#4CAF50}
+.fres-val{font-family:'DM Mono',monospace;font-size:19px;color:var(--green);font-weight:500}
+.hcard{background:var(--dark3);border:1px solid var(--dark5);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.hcard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.hcard-title{font-size:13px;font-weight:600}
+.hcard-sub{font-size:10px;color:var(--text-d);margin-top:2px}
+.hstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.hstat{text-align:center}
+.hstat-lbl{font-size:9px;color:var(--text-d);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.hstat-val{font-family:'DM Mono',monospace;font-size:13px}
+.chip{display:inline-block;padding:3px 8px;border-radius:99px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.chip-g{background:var(--green-bg);color:var(--green);border:1px solid var(--green-d)}
+.chip-r{background:var(--red-bg);color:var(--red);border:1px solid var(--red-d)}
+.htotal{background:linear-gradient(135deg,#0D1F0D,#0A1A0A);border:1px solid var(--green-d);border-radius:var(--r);padding:16px;text-align:center;margin-top:16px}
+.fab{position:fixed;bottom:22px;right:18px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;color:var(--dark);font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;transition:transform .2s;z-index:50}
+.fab:active{transform:scale(.92)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:var(--dark2);border:1px solid var(--dark5);border-radius:20px 20px 0 0;padding:18px 18px 38px;width:100%;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:34px;height:4px;background:var(--dark5);border-radius:99px;margin:0 auto 18px}
+.mtitle{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);margin-bottom:18px}
+.type-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.tbtn{padding:9px 4px;border-radius:var(--rs);border:1px solid var(--dark5);background:var(--dark4);color:var(--text-d);font-size:11px;font-weight:500;cursor:pointer;text-align:center;transition:all .2s}
+.tbtn.active{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:var(--dark);border-color:transparent;font-weight:600}
+.flbl{font-size:10px;color:var(--text-d);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:block}
+.finp{width:100%;background:var(--blue);border:1px solid #2A3D5A;border-radius:var(--rs);padding:12px 13px;color:var(--blue-t);font-family:'DM Mono',monospace;font-size:16px;font-weight:500;outline:none;transition:border-color .2s;-webkit-appearance:none;margin-bottom:13px}
+.finp:focus{border-color:var(--gold)}.finp::placeholder{color:var(--text-f)}
+.finp.calc{background:var(--dark4);border-color:var(--dark5);color:var(--green);pointer-events:none}
+.fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mactions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn{width:100%;padding:14px;border-radius:var(--r);border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:var(--dark)}
+.btn-gold:active{transform:scale(.98)}
+.btn-out{background:transparent;border:1px solid var(--gold-d);color:var(--gold)}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:var(--dark2);border:1px solid var(--dark5);border-radius:var(--r);padding:22px;width:100%;max-width:320px;text-align:center}
+.confirm-box h3{font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:10px}
+.confirm-box p{font-size:13px;color:var(--text-d);margin-bottom:18px}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fechar-btn{width:100%;padding:14px;background:var(--dark4);border:1px solid var(--gold-d);border-radius:var(--r);color:var(--gold);font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;font-family:'DM Sans',sans-serif}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div><div class="app-title">⚜ Ouro Fino <span>Controle de Operação</span></div></div>
+  <div class="week-badge" id="week-badge">Semana 1</div>
+</header>
+<nav class="nav-tabs">
+  <div class="nav-tab active" onclick="showPage('compras',this)"><span class="ti">📦</span>Compras</div>
+  <div class="nav-tab" onclick="showPage('fechamentos',this)"><span class="ti">🤝</span>Fecham.</div>
+  <div class="nav-tab" onclick="showPage('entregas',this)"><span class="ti">🔥</span>Entregas</div>
+  <div class="nav-tab" onclick="showPage('lucro',this)"><span class="ti">💰</span>Lucro</div>
+  <div class="nav-tab" onclick="showPage('historico',this)"><span class="ti">📋</span>Histórico</div>
+</nav>
+
+<div class="page active" id="page-compras">
+  <div class="sgrid" style="margin-top:14px">
+    <div class="scard green"><div class="cl">Fino Estoque</div><div class="cv green" id="s-fino-estoque">0.00</div><div class="cu">gramas</div></div>
+    <div class="scard gold"><div class="cl">Preço Médio/g</div><div class="cv gold" id="s-preco-med">—</div><div class="cu">por g fino</div></div>
+    <div class="scard blue"><div class="cl">Total Investido</div><div class="cv blue" id="s-custo-total">R$ 0,00</div><div class="cu">esta semana</div></div>
+    <div class="scard"><div class="cl">Registros</div><div class="cv" id="s-n-compras" style="color:var(--text)">0</div><div class="cu">compras</div></div>
+  </div>
+  <div class="sec">Registros</div>
+  <div class="tbl tc" id="tbl-compras">
+    <div class="thdr"><span>Data</span><span>Fino (g)</span><span>Custo</span></div>
+    <div class="empty" id="empty-compras"><div class="empty-i">📦</div>Nenhuma compra ainda<br><small style="font-size:11px;margin-top:6px;display:block">Toque no + para adicionar</small></div>
+  </div>
+</div>
+
+<div class="page" id="page-fechamentos">
+  <div class="sgrid" style="margin-top:14px">
+    <div class="scard red"><div class="cl">Total Devido</div><div class="cv red" id="s-fino-devido">0.00</div><div class="cu">gramas</div></div>
+    <div class="scard gold"><div class="cl">Fechamentos</div><div class="cv gold" id="s-n-fech">0</div><div class="cu">em aberto</div></div>
+  </div>
+  <div class="sec">Fechamentos</div>
+  <div class="tbl tf" id="tbl-fech">
+    <div class="thdr"><span>Data</span><span>Valor (R$)</span><span>Devido (g)</span></div>
+    <div class="empty" id="empty-fech"><div class="empty-i">🤝</div>Nenhum fechamento<br><small style="font-size:11px;margin-top:6px;display:block">Toque no + para adicionar</small></div>
+  </div>
+</div>
+
+<div class="page" id="page-entregas">
+  <div class="bar-wrap" style="margin-top:14px">
+    <div class="bar-lbl">Progresso da Quitação</div>
+    <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="bar-nums">
+      <span style="color:var(--green)">Entregue: <strong id="bar-ent">0.00g</strong></span>
+      <span style="color:var(--red)">Saldo: <strong id="bar-saldo">0.00g</strong></span>
+    </div>
+  </div>
+  <div class="sgrid">
+    <div class="scard green"><div class="cl">Entregue</div><div class="cv green" id="s-ent">0.00</div><div class="cu">gramas</div></div>
+    <div class="scard"><div class="cl">Saldo Final</div><div class="cv" id="s-saldo" style="color:var(--text)">0.00</div><div class="cu">gramas</div></div>
+  </div>
+  <div class="sec">Barras Entregues</div>
+  <div class="tbl te" id="tbl-ent">
+    <div class="thdr"><span>Data</span><span>Peso/Teor</span><span>Fino</span><span>Saldo</span></div>
+    <div class="empty" id="empty-ent"><div class="empty-i">🔥</div>Nenhuma entrega<br><small style="font-size:11px;margin-top:6px;display:block">Toque no + para adicionar</small></div>
+  </div>
+  <button class="fechar-btn" onclick="confirmarFecharSemana()">📋 Fechar Semana e Arquivar no Histórico</button>
+</div>
+
+<div class="page" id="page-lucro">
+  <div class="lucro-hero" style="margin-top:14px">
+    <div class="lh-lbl">💰 Lucro Realizado</div>
+    <div class="lh-val" id="lucro-realizado">R$ 0,00</div>
+    <div class="lh-sub">sobre o fino já entregue</div>
+  </div>
+  <div id="lucro-breakdown"></div>
+  <div class="filtro-card">
+    <div class="ftitle">📅 Filtrar por período</div>
+    <div class="fgrid">
+      <div><div class="flbl" style="margin-bottom:5px">Mês</div>
+        <select class="fsel" id="f-mes" onchange="updateFiltro()">
+          <option value="0">Todos</option>
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+      </div>
+      <div><div class="flbl" style="margin-bottom:5px">Semana</div>
+        <select class="fsel" id="f-sem" onchange="updateFiltro()"><option value="0">Todas</option></select>
+      </div>
+    </div>
+    <div class="fres">
+      <div><div class="fres-lbl">💰 Lucro do período</div><div style="font-size:9px;color:var(--text-d);margin-top:2px" id="f-label">—</div></div>
+      <div class="fres-val" id="f-lucro">R$ 0,00</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-historico">
+  <div class="sec" style="margin-top:14px">Semanas Fechadas</div>
+  <div id="historico-list"><div class="empty"><div class="empty-i">📋</div>Nenhuma semana fechada ainda</div></div>
+  <div class="htotal" id="htotal" style="display:none">
+    <div style="font-size:10px;color:#4CAF50;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Total Acumulado</div>
+    <div style="font-family:'Playfair Display',serif;font-size:30px;color:var(--green)" id="h-total-lucro">R$ 0,00</div>
+    <div style="font-size:10px;color:var(--text-d);margin-top:4px" id="h-total-sub">0 semanas fechadas</div>
+  </div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="overlay" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modal" onclick="event.stopPropagation()">
+  <div class="mhandle"></div>
+  <div class="mtitle">Nova Entrada</div>
+  <div class="type-btns">
+    <div class="tbtn active" id="tb-c" onclick="setType('c')">📦 Compra</div>
+    <div class="tbtn" id="tb-f" onclick="setType('f')">🤝 Fechamento</div>
+    <div class="tbtn" id="tb-e" onclick="setType('e')">🔥 Entrega</div>
+  </div>
+  <div id="form-c">
+    <label class="flbl">Data</label><input type="date" class="finp" id="c-data">
+    <div class="fgrid2">
+      <div><label class="flbl">Peso (g)</label><input type="number" class="finp" id="c-peso" placeholder="0.000" step="0.001" oninput="calcC()"></div>
+      <div><label class="flbl">Preço/g (R$)</label><input type="number" class="finp" id="c-preco" placeholder="550" oninput="calcC()"></div>
+    </div>
+    <label class="flbl">Teor (ex: 90 ou 0,90)</label>
+    <input type="number" class="finp" id="c-teor" placeholder="90" step="0.01" oninput="calcC()">
+    <div class="fgrid2">
+      <div><label class="flbl">Fino (g) — auto</label><input type="text" class="finp calc" id="c-fino" readonly placeholder="—"></div>
+      <div><label class="flbl">Custo Total — auto</label><input type="text" class="finp calc" id="c-custo" readonly placeholder="—"></div>
+    </div>
+  </div>
+  <div id="form-f" style="display:none">
+    <label class="flbl">Data</label><input type="date" class="finp" id="f-data">
+    <label class="flbl">Valor Adiantado (R$)</label><input type="number" class="finp" id="f-valor" placeholder="7.640" oninput="calcF()">
+    <label class="flbl">Preço de Fechamento (R$/g)</label><input type="number" class="finp" id="f-preco" placeholder="320" oninput="calcF()">
+    <label class="flbl">Fino Devido (g) — auto</label><input type="text" class="finp calc" id="f-fino" readonly placeholder="—">
+  </div>
+  <div id="form-e" style="display:none">
+    <label class="flbl">Data da Entrega</label><input type="date" class="finp" id="e-data">
+    <div class="fgrid2">
+      <div><label class="flbl">Peso da Barra (g)</label><input type="number" class="finp" id="e-peso" placeholder="0.000" step="0.001" oninput="calcE()"></div>
+      <div><label class="flbl">Teor</label><input type="number" class="finp" id="e-teor" placeholder="90" step="0.01" oninput="calcE()"></div>
+    </div>
+    <div class="fgrid2">
+      <div><label class="flbl">Fino da Barra — auto</label><input type="text" class="finp calc" id="e-fino" readonly placeholder="—"></div>
+      <div><label class="flbl">Novo Saldo — auto</label><input type="text" class="finp calc" id="e-saldo" readonly placeholder="—"></div>
+    </div>
+  </div>
+  <div class="mactions">
+    <button class="btn btn-out" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-gold" onclick="salvar()">✓ Salvar</button>
+  </div>
+</div>
+</div>
+
+<div class="confirm-overlay" id="confirm-modal">
+<div class="confirm-box">
+  <h3>Fechar Semana?</h3>
+  <p>As entregas serão arquivadas no Histórico. Compras e Fechamentos continuam acumulando para a próxima semana.</p>
+  <div class="confirm-btns">
+    <button class="btn btn-out" onclick="document.getElementById('confirm-modal').classList.remove('open')">Cancelar</button>
+    <button class="btn btn-gold" onclick="fecharSemana()">Confirmar</button>
+  </div>
+</div>
+</div>
+
+<div class="confirm-overlay" id="del-modal">
+<div class="confirm-box">
+  <h3>Excluir registro?</h3>
+  <p id="del-msg">Tem certeza?</p>
+  <div class="confirm-btns">
+    <button class="btn btn-out" onclick="document.getElementById('del-modal').classList.remove('open')">Cancelar</button>
+    <button class="btn" style="background:var(--red-bg);border:1px solid var(--red-d);color:var(--red)" onclick="confirmarDelete()">Excluir</button>
+  </div>
+</div>
+</div>
+
+<script>
+const KEY='ouro_fino_v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||def()}catch(e){return def()}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function def(){return{semanaAtual:1,compras:[],fechamentos:[],entregas:[],historico:[]}}
+let DB=load();
+
+function r2(n){return Math.round((n||0)*100)/100}
+function normTeor(v){v=parseFloat(v)||0;return v>1?v/100:v}
+function fmt(n){return r2(n).toFixed(2).replace('.',',')}
+function fmtR(n){
+  const s=r2(n).toFixed(2);
+  const parts=s.split('.');
+  parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  return 'R$ '+parts.join(',');
+}
+function fmtG(n){return fmt(n)+'g'}
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`}
+function uid(){return Date.now()+Math.random().toString(36).slice(2)}
+
+function metrics(){
+  const c=DB.compras,f=DB.fechamentos,e=DB.entregas;
+  const totalFino=c.reduce((s,x)=>s+x.fino,0);
+  const totalCusto=c.reduce((s,x)=>s+x.custo,0);
+  const precoMed=totalFino>0?r2(totalCusto/totalFino):0;
+  const finoDevido=f.reduce((s,x)=>s+x.finoDev,0);
+  const totalValFech=f.reduce((s,x)=>s+x.valor,0);
+  const precoFechMed=finoDevido>0?r2(totalValFech/finoDevido):0;
+  const finoEnt=e.reduce((s,x)=>s+x.fino,0);
+  const saldo=r2(finoEnt-finoDevido);
+  const margem=r2(precoFechMed-precoMed);
+  return{totalFino,totalCusto,precoMed,finoDevido,finoEnt,saldo,precoFechMed,margem,
+    lucroReal:r2(margem*finoEnt),lucroEst:r2(margem*finoDevido)};
+}
+
+function renderAll(){renderCompras();renderFechamentos();renderEntregas();renderLucro();renderHistorico();document.getElementById('week-badge').textContent='Semana '+DB.semanaAtual}
+
+function renderCompras(){
+  const m=metrics();
+  document.getElementById('s-fino-estoque').textContent=fmt(m.totalFino);
+  document.getElementById('s-preco-med').textContent=m.precoMed>0?fmtR(m.precoMed):'—';
+  document.getElementById('s-custo-total').textContent=fmtR(m.totalCusto);
+  document.getElementById('s-n-compras').textContent=DB.compras.length;
+  const tbl=document.getElementById('tbl-compras');
+  const emp=document.getElementById('empty-compras');
+  emp.style.display=DB.compras.length===0?'block':'none';
+  [...tbl.querySelectorAll('.trow')].forEach(r=>r.remove());
+  [...DB.compras].reverse().forEach(c=>{
+    const row=document.createElement('div');row.className='trow';
+    row.innerHTML=`<span><span class="dt">${fmtDate(c.data)}</span><br><span style="font-size:10px;color:var(--text-d)">${fmt(c.peso)}g · t:${c.teor}</span></span><span class="vg">${fmtG(c.fino)}</span><span class="vo">${fmtR(c.custo)}</span>`;
+    row.onclick=()=>deletarConfirm('compra',c.id,`Compra ${fmtG(c.fino)} em ${fmtDate(c.data)}`);
+    tbl.appendChild(row);
+  });
+}
+
+function renderFechamentos(){
+  const m=metrics();
+  document.getElementById('s-fino-devido').textContent=fmt(m.finoDevido);
+  document.getElementById('s-n-fech').textContent=DB.fechamentos.length;
+  const tbl=document.getElementById('tbl-fech');
+  const emp=document.getElementById('empty-fech');
+  emp.style.display=DB.fechamentos.length===0?'block':'none';
+  [...tbl.querySelectorAll('.trow')].forEach(r=>r.remove());
+  [...DB.fechamentos].reverse().forEach(f=>{
+    const row=document.createElement('div');row.className='trow';
+    row.innerHTML=`<span class="dt">${fmtDate(f.data)}</span><span class="vo">${fmtR(f.valor)}</span><span class="vr">${fmtG(f.finoDev)}</span>`;
+    row.onclick=()=>deletarConfirm('fechamento',f.id,`Fechamento ${fmtR(f.valor)} em ${fmtDate(f.data)}`);
+    tbl.appendChild(row);
+  });
+}
+
+function renderEntregas(){
+  const m=metrics();
+  const pct=m.finoDevido>0?Math.min(100,r2(m.finoEnt/m.finoDevido*100)):0;
+  document.getElementById('bar-fill').style.width=pct+'%';
+  document.getElementById('bar-ent').textContent=fmtG(m.finoEnt);
+  document.getElementById('bar-saldo').textContent=(m.saldo>=0?'+':'')+fmtG(m.saldo);
+  document.getElementById('s-ent').textContent=fmt(m.finoEnt);
+  const sEl=document.getElementById('s-saldo');
+  sEl.textContent=(m.saldo>=0?'+':'')+fmt(m.saldo);
+  sEl.style.color=m.saldo>=0?'var(--green)':'var(--red)';
+  const tbl=document.getElementById('tbl-ent');
+  const emp=document.getElementById('empty-ent');
+  emp.style.display=DB.entregas.length===0?'block':'none';
+  [...tbl.querySelectorAll('.trow')].forEach(r=>r.remove());
+  let acum=0;
+  const rows=DB.entregas.map(e=>{acum+=e.fino;return{e,saldo:r2(acum-m.finoDevido)}});
+  [...rows].reverse().forEach(({e,saldo})=>{
+    const row=document.createElement('div');row.className='trow';
+    const sc=saldo>=0?'vg':'vr';const sp=saldo>=0?'+':'';
+    row.innerHTML=`<span class="dt">${fmtDate(e.data)}</span><span class="vd">${fmt(e.peso)}g<br><span style="font-size:10px">t:${e.teor}</span></span><span class="vg">${fmtG(e.fino)}</span><span class="${sc}">${sp}${fmtG(saldo)}</span>`;
+    row.onclick=()=>deletarConfirm('entrega',e.id,`Entrega ${fmtG(e.fino)} em ${fmtDate(e.data)}`);
+    tbl.appendChild(row);
+  });
+}
+
+function renderLucro(){
+  const m=metrics();
+  document.getElementById('lucro-realizado').textContent=fmtR(m.lucroReal);
+  document.getElementById('lucro-breakdown').innerHTML=`
+    <div class="lrow"><span class="lrow-lbl">Preço médio de compra</span><span class="lrow-val vd">${fmtR(m.precoMed)}/g</span></div>
+    <div class="lrow"><span class="lrow-lbl">Preço médio fechamento</span><span class="lrow-val vo">${fmtR(m.precoFechMed)}/g</span></div>
+    <div class="lrow"><span class="lrow-lbl">Margem por grama</span><span class="lrow-val vg">${m.margem>=0?'+':''}${fmtR(m.margem)}/g</span></div>
+    <div class="lrow"><span class="lrow-lbl">Fino entregue</span><span class="lrow-val">${fmtG(m.finoEnt)}</span></div>
+    <div class="lrow"><span class="lrow-lbl">Fino ainda devido</span><span class="lrow-val vr">${fmtG(m.finoDevido)}</span></div>
+    <div class="lrow hi"><span class="lrow-lbl" style="color:var(--green)">Lucro estimado total</span><span class="lrow-val vg">${fmtR(m.lucroEst)}</span></div>`;
+  updateFiltro();
+}
+
+function renderHistorico(){
+  const list=document.getElementById('historico-list');
+  const total=document.getElementById('htotal');
+  if(DB.historico.length===0){list.innerHTML='<div class="empty"><div class="empty-i">📋</div>Nenhuma semana fechada ainda</div>';total.style.display='none';return;}
+  const tl=DB.historico.reduce((s,h)=>s+h.lucro,0);
+  list.innerHTML=[...DB.historico].reverse().map(h=>`
+    <div class="hcard">
+      <div class="hcard-top"><div><div class="hcard-title">Semana ${h.semana}</div><div class="hcard-sub">${fmtDate(h.dataInicio)} – ${fmtDate(h.dataFim)}</div></div>
+      <span class="chip ${h.saldo>=0?'chip-g':'chip-r'}">${h.saldo>=0?'Quitado':'Pendente'}</span></div>
+      <div class="hstats">
+        <div class="hstat"><div class="hstat-lbl">Devido</div><div class="hstat-val vo">${fmtG(h.finoDevido)}</div></div>
+        <div class="hstat"><div class="hstat-lbl">Entregue</div><div class="hstat-val vg">${fmtG(h.finoEnt)}</div></div>
+        <div class="hstat"><div class="hstat-lbl">Lucro</div><div class="hstat-val vg">${fmtR(h.lucro)}</div></div>
+      </div>
+    </div>`).join('');
+  total.style.display='block';
+  document.getElementById('h-total-lucro').textContent=fmtR(tl);
+  document.getElementById('h-total-sub').textContent=DB.historico.length+' semana(s) fechada(s)';
+}
+
+function updateFiltro(){
+  const mes=parseInt(document.getElementById('f-mes').value);
+  const semSel=parseInt(document.getElementById('f-sem').value);
+  const fSem=document.getElementById('f-sem');
+  const sems=[...new Set(DB.historico.map(h=>h.semana))];
+  fSem.innerHTML='<option value="0">Todas</option>'+sems.map(s=>`<option value="${s}" ${semSel===s?'selected':''}> Semana ${s}</option>`).join('');
+  let itens=DB.historico;
+  if(semSel>0)itens=itens.filter(h=>h.semana===semSel);
+  if(mes>0)itens=itens.filter(h=>h.dataFim&&parseInt(h.dataFim.split('-')[1])===mes);
+  let lucro=itens.reduce((s,h)=>s+h.lucro,0);
+  const m=metrics();
+  if(semSel===0&&(mes===0||(mes>0&&new Date().getMonth()+1===mes)))lucro+=m.lucroReal;
+  const meses=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('f-label').textContent=semSel>0?`Semana ${semSel}`:mes>0?meses[mes]:'Tudo';
+  document.getElementById('f-lucro').textContent=fmtR(lucro);
+}
+
+let currentType='c';
+function openModal(){
+  document.getElementById('modal').classList.add('open');
+  const t=today();
+  ['c-data','f-data','e-data'].forEach(id=>document.getElementById(id).value=t);
+  setType('c');
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  // Limpa todos os campos
+  ['c-peso','c-preco','c-teor','c-fino','c-custo',
+   'f-valor','f-preco','f-fino',
+   'e-peso','e-teor','e-fino','e-saldo'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+}
+function setType(t){
+  currentType=t;
+  ['c','f','e'].forEach(x=>{
+    document.getElementById('form-'+x).style.display=x===t?'block':'none';
+    document.getElementById('tb-'+x).className='tbtn'+(x===t?' active':'');
+  });
+}
+
+function calcC(){
+  const peso=parseFloat(document.getElementById('c-peso').value)||0;
+  const preco=parseFloat(document.getElementById('c-preco').value)||0;
+  const teor=normTeor(document.getElementById('c-teor').value);
+  document.getElementById('c-fino').value=r2(peso*teor)>0?fmtG(r2(peso*teor)):'—';
+  document.getElementById('c-custo').value=r2(peso*preco)>0?fmtR(r2(peso*preco)):'—';
+}
+function calcF(){
+  const valor=parseFloat(document.getElementById('f-valor').value)||0;
+  const preco=parseFloat(document.getElementById('f-preco').value)||0;
+  document.getElementById('f-fino').value=preco>0?fmtG(r2(valor/preco)):'—';
+}
+function calcE(){
+  const peso=parseFloat(document.getElementById('e-peso').value)||0;
+  const teor=normTeor(document.getElementById('e-teor').value);
+  const fino=r2(peso*teor);
+  const m=metrics();
+  const ns=r2(m.finoEnt+fino-m.finoDevido);
+  document.getElementById('e-fino').value=fino>0?fmtG(fino):'—';
+  document.getElementById('e-saldo').value=fino>0?(ns>=0?'+':'')+fmtG(ns):'—';
+}
+
+function salvar(){
+  if(currentType==='c')salvarCompra();
+  else if(currentType==='f')salvarFechamento();
+  else salvarEntrega();
+}
+function salvarCompra(){
+  const peso=parseFloat(document.getElementById('c-peso').value);
+  const preco=parseFloat(document.getElementById('c-preco').value);
+  const teor=document.getElementById('c-teor').value;
+  const data=document.getElementById('c-data').value;
+  if(!peso||!preco||!teor||!data){toast('Preencha todos os campos','r');return;}
+  const tn=normTeor(teor);
+  DB.compras.push({id:uid(),data,peso:r2(peso),preco:r2(preco),teor:r2(parseFloat(teor)),fino:r2(peso*tn),custo:r2(peso*preco)});
+  save(DB);renderAll();closeModal();toast('Compra registrada ✓');
+}
+function salvarFechamento(){
+  const valor=parseFloat(document.getElementById('f-valor').value);
+  const preco=parseFloat(document.getElementById('f-preco').value);
+  const data=document.getElementById('f-data').value;
+  if(!valor||!preco||!data){toast('Preencha todos os campos','r');return;}
+  DB.fechamentos.push({id:uid(),data,valor:r2(valor),preco:r2(preco),finoDev:r2(valor/preco)});
+  save(DB);renderAll();closeModal();toast('Fechamento registrado ✓');
+}
+function salvarEntrega(){
+  const peso=parseFloat(document.getElementById('e-peso').value);
+  const teor=document.getElementById('e-teor').value;
+  const data=document.getElementById('e-data').value;
+  if(!peso||!teor||!data){toast('Preencha todos os campos','r');return;}
+  const tn=normTeor(teor);
+  DB.entregas.push({id:uid(),data,peso:r2(peso),teor:r2(parseFloat(teor)),fino:r2(peso*tn)});
+  save(DB);renderAll();closeModal();toast('Entrega registrada ✓');
+}
+
+let delPending=null;
+function deletarConfirm(tipo,id,desc){
+  delPending={tipo,id};
+  document.getElementById('del-msg').textContent=`Excluir: ${desc}?`;
+  document.getElementById('del-modal').classList.add('open');
+}
+function confirmarDelete(){
+  if(!delPending)return;
+  const{tipo,id}=delPending;
+  if(tipo==='compra')DB.compras=DB.compras.filter(x=>x.id!==id);
+  if(tipo==='fechamento')DB.fechamentos=DB.fechamentos.filter(x=>x.id!==id);
+  if(tipo==='entrega')DB.entregas=DB.entregas.filter(x=>x.id!==id);
+  save(DB);renderAll();
+  document.getElementById('del-modal').classList.remove('open');
+  toast('Excluído','r');delPending=null;
+}
+
+function confirmarFecharSemana(){document.getElementById('confirm-modal').classList.add('open')}
+function fecharSemana(){
+  const m=metrics();
+  const datas=DB.entregas.map(e=>e.data).sort();
+  DB.historico.push({semana:DB.semanaAtual,dataInicio:datas[0]||today(),dataFim:datas[datas.length-1]||today(),
+    finoDevido:r2(m.finoDevido),finoEnt:r2(m.finoEnt),saldo:r2(m.saldo),lucro:r2(m.lucroReal),
+    precoMed:r2(m.precoMed),precoFech:r2(m.precoFechMed)});
+  DB.entregas=[];DB.semanaAtual++;
+  save(DB);document.getElementById('confirm-modal').classList.remove('open');renderAll();
+  showPage('historico',document.querySelectorAll('.nav-tab')[4]);
+  toast('Semana '+(DB.semanaAtual-1)+' arquivada ✓');
+}
+
+function showPage(id,tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  tab.classList.add('active');
+}
+
+function toast(msg,tipo){
+  const t=document.createElement('div');t.textContent=msg;
+  t.style.cssText=`position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:${tipo==='r'?'var(--red)':'var(--green)'};color:#fff;font-weight:600;font-size:13px;padding:9px 20px;border-radius:99px;z-index:999;white-space:nowrap;animation:ft 2.5s forwards;`;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+const st=document.createElement('style');
+st.textContent='@keyframes ft{0%{opacity:0;transform:translateX(-50%) translateY(8px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}';
+document.head.appendChild(st);
+
+renderAll();
+</script>
+</body>
+</html>
